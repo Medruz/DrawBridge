@@ -12,13 +12,14 @@ namespace DrawbridgeSimulator.Models
         {
         }
 
-        public string CreaPonte(int nrCar)
+        // Scrive la prima riga (quella superiore) del ponte
+        public string CreaPonteSopra(int nrCar)
         {
             // nrCar indica quante macchine possono passare contemporanemante nel ponte
 
             StringBuilder sb = new StringBuilder();
 
-            // Scrive la prima riga (quella superiore) del ponte
+            
             for(int i = 0; i < 30; i++)
             {
                 sb.Append("-");   
@@ -30,12 +31,18 @@ namespace DrawbridgeSimulator.Models
                 sb.AppendLine("\n");
             }
 
+            return sb.ToString();
+        }
+
+        public string CreaPonteSotto(int nrCar) 
+        {
+            StringBuilder sb = new StringBuilder();
+
             // Scrive la seconda riga (quella inferiore) del ponte
-            for(int k = 0; k < 30; k++)
+            for (int k = 0; k < 30; k++)
             {
                 sb.Append("-");
             }
-
             return sb.ToString();
         }
     }

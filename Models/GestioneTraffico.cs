@@ -21,7 +21,7 @@ namespace DrawbridgeSimulator.Models
 
         public void Gestione()
         {
-            string lettera = "";
+            ConsoleKeyInfo lettera;
             bool fine = false;
             int width = Console.WindowWidth;
             //int height = Console.WindowHeight;
@@ -33,29 +33,50 @@ namespace DrawbridgeSimulator.Models
 
                 // Stampo il ponte
                 Console.SetCursorPosition(width / 2, 3);
-                Console.WriteLine(Bridge.CreaPonte(4));
+                Console.WriteLine(Bridge.CreaPonteSopra(4));
+                Console.SetCursorPosition(width / 2, 7);
+                Console.WriteLine(Bridge.CreaPonteSotto(4));
+
+                // Scrivo le auto a sx
+                for(int i = 0; i < VeicoliSx?.Count; i++)
+                {
+                    Console.SetCursorPosition(5,i+4);
+                    Console.WriteLine(VeicoliSx[i].ToString());
+                }
+
+                // Scrivo le auto a dx
+                for (int i = 0; i < VeicoliDx?.Count; i++)
+                {
+                    Console.SetCursorPosition(width-9, i + 4);
+                    Console.WriteLine(VeicoliDx[i].ToString());
+                }
+
+                // Legge la pressione del tasto (senza dover premere Enter)
+                //ConsoleKeyInfo tasto = Console.ReadKey(true); 'true' per non mostrare il tasto premuto
+
 
                 // Prendo in ingresso la lettera di comando
-                lettera = Console.ReadLine();
+                Console.SetCursorPosition(5, 25);
+                lettera = Console.ReadKey(true);
 
-                switch (lettera?.ToUpper())
+                switch (lettera.Key)
                 {
                     // Aggiunge una macchina alla lista sinsitra
-                    case "L":
+                    case ConsoleKey.L:
                         VeicoliSx?.Add(new Veicolo(VeicoliSx.Count));
                         break;
 
                     // Aggiunge una macchina alla lista sinsitra
-                    case "R":
+                    case ConsoleKey.R:
                         VeicoliDx?.Add(new Veicolo(VeicoliDx.Count));
                         break;
 
                     // Avvia il movimento delle macchine
-                    case "P":
+                    case ConsoleKey.P:
                         break;
 
                     // Killa il programma
-                    case "E":
+                    case ConsoleKey.E:
                         fine = true;
                         break;
 
@@ -63,19 +84,16 @@ namespace DrawbridgeSimulator.Models
                     default:
                         break;
                 }
-
-
-
-
             } while (fine == false);  
         }
-        //public string Attraversa()
-        //{
-        //    // SetCursorPosition per rappresentare l'attraversamento
-        //    for(int i = 0; i < VeicoliDx.Count; i++)
-        //    {
 
-        //    }
-        //}
+        public string AttraversaDxSx()
+        {
+            // SetCursorPosition per rappresentare l'attraversamento
+            for (int i = 0; i < VeicoliDx.Count; i++)
+            {
+                
+            }
+        }
     }
 }
