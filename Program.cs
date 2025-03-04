@@ -1,10 +1,13 @@
-﻿namespace DrawbridgeSimulator
+﻿using DrawbridgeSimulator.Models;
+
+namespace DrawbridgeSimulator
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            GestioneTraffico gf = new GestioneTraffico();
+            gf.Gestione();
         }
     }
 }
