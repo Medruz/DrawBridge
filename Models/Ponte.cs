@@ -34,7 +34,7 @@ namespace DrawbridgeSimulator.Models
             return sb.ToString();
         }
 
-        public string CreaPonteSotto(int nrCar) 
+        public string CreaPonteSotto() 
         {
             StringBuilder sb = new StringBuilder();
 
