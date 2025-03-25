@@ -16,14 +16,20 @@ namespace DrawbridgeSimulator.Models
         private const int NrAutoSulPonte = 3;
         private SemaphoreSlim sSlim;
         private readonly int width = Console.WindowWidth;
-        private List<Task> tasks;
+        private List<Task> tasksDx { get; set; }
+        private List<Task> tasksSx { get; set; }
+        private int autoDx { get; set; }
+        private int autoSx { get; set; }
         public GestioneTraffico()
         {
             VeicoliDx = new List<Veicolo>();
             VeicoliSx = new List<Veicolo>();
             Bridge = new Ponte();
             sSlim = new SemaphoreSlim(NrAutoSulPonte);
-            tasks = new List<Task>();
+            tasksDx = new List<Task>();
+            tasksSx = new List<Task>();
+            autoDx = 0;
+            autoSx = 0;
         }
 
         
@@ -62,7 +68,7 @@ namespace DrawbridgeSimulator.Models
                 // Scrivo le auto a dx
                 for (int i = 0; i < VeicoliDx?.Count; i++)
                 {
-                    Console.SetCursorPosition(width-9, i + 4);
+                    Console.SetCursorPosition(width-10, i + 4);
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine(VeicoliDx[i].ToString());
                     Console.ForegroundColor = ConsoleColor.White;
@@ -127,13 +133,18 @@ namespace DrawbridgeSimulator.Models
                 if (VeicoliDx?.Count != 0)
                 {
                     pos = 27;
-                    for (int i = 0; i < NrAutoSulPonte; i++)
+                    int auto = NrAutoSulPonte;
+                    if(VeicoliDx.Count < NrAutoSulPonte)
                     {
-                        tasks.Add(AttraversaDxSx(i, pos));
+                        auto = VeicoliDx.Count;
+                    }
+                    for (int i = 0; i < auto; i++)
+                    {
+                        tasksDx.Add(AttraversaDxSx(i, pos));
                     }
                     for (int i = 0; i < 9; i++)
                     {
-                        for(int k = 0; k < tasks.Count; k++)
+                        for(int k = 0; k < tasksDx.Count; k++)
                         {
                             await sSlim.WaitAsync();
                             try
@@ -151,26 +162,64 @@ namespace DrawbridgeSimulator.Models
                         pos += 5;
                         Thread.Sleep(200);
                     }
-                    VeicoliDx.Remove(VeicoliDx[0]);
-                    VeicoliDx.Remove(VeicoliDx[0]);
-                    VeicoliDx.Remove(VeicoliDx[0]);
-                    for(int j = 0; j < NrAutoSulPonte; j++)
+                    for(int j = 0; j < auto; j++)
                     {
-                        Console.SetCursorPosition(width - 72, j+13);
-                        Console.WriteLine("              ");
+                        Console.SetCursorPosition(width - 68, j+13);
+                        Console.WriteLine("             ");
+                        Console.SetCursorPosition(width - 10, autoDx + 4);
+                        Console.WriteLine("          ");
+                        VeicoliDx.Remove(VeicoliDx[0]);
+                        autoDx++;
                     }
+                    tasksDx.Clear();
                 }
                 if (VeicoliSx?.Count != 0)
                 {
-                    pos = 20;
+                    pos = 15;
+                    int auto = NrAutoSulPonte;
+                    if (VeicoliSx.Count < NrAutoSulPonte)
+                    {
+                        auto = VeicoliSx.Count;
+                    }
+                    for (int i = 0; i < auto; i++)
+                    {
+                        tasksSx.Add(AttraversaSxDx(i, pos));
+                    }
                     for (int i = 0; i < 9; i++)
                     {
-                        AttraversaSxDx(pos);
-                        pos += 5;
+                        for (int k = 0; k < tasksSx.Count; k++)
+                        {
+                            await sSlim.WaitAsync();
+                            try
+                            {
+                                // Esegue il task asincrono
+                                await AttraversaSxDx(k, pos);
+                            }
+                            finally
+                            {
+                                // Rilascia il semaforo per consentire ad altri task di eseguire
+                                sSlim.Release();
+                            }
+                        }
+
+                        pos -= 5;
                         Thread.Sleep(200);
                     }
+                    for (int j = 0; j < auto; j++)
+                    {
+                        Console.SetCursorPosition(width - 36, j + 13);
+                        Console.WriteLine("               ");
+                        Console.SetCursorPosition(5, autoSx + 4);
+                        Console.WriteLine("                  ");
+                        VeicoliSx.Remove(VeicoliSx[0]);
+                        autoSx++;
+                    }
+                    tasksSx.Clear();
                 }
+            
             } while (VeicoliDx.Count != 0 || VeicoliSx.Count != 0);
+            autoDx = 0;
+            autoSx = 0;
         }
 
         public async Task AttraversaDxSx(int i, int pos)
@@ -206,18 +255,14 @@ namespace DrawbridgeSimulator.Models
             //await Task.CompletedTask;
         }
 
-        public async Task AttraversaSxDx(int pos)
+        public async Task AttraversaSxDx(int i, int pos)
         {
-            for (int i = 0; i < NrAutoSulPonte; i++)
-            {
-                Console.SetCursorPosition(width - (pos - 5), i + 13);
-                Console.WriteLine("          ");
-                Console.SetCursorPosition(width - pos, i + 13);
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(VeicoliDx?[i].ToString());
-                Console.ForegroundColor = ConsoleColor.White;
-            }
-            await Task.CompletedTask;
+            Console.SetCursorPosition(width/2 - (pos + 5), i + 13);
+            Console.WriteLine("          ");
+            Console.SetCursorPosition(width/2 - pos, i + 13);
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(VeicoliSx?[i].ToString());
+            Console.ForegroundColor = ConsoleColor.White;
         }
 
         public void Acqua(int startRow)
@@ -230,6 +275,16 @@ namespace DrawbridgeSimulator.Models
                     Console.Write("s");
                 }
             }
+        }
+
+        public void ScriviAutoDx()
+        {
+
+        }
+
+        public void ScriviAutoSx()
+        {
+
         }
     }
 }
