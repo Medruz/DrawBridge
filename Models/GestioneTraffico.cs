@@ -38,6 +38,12 @@ namespace DrawbridgeSimulator.Models
             //Thread tDx = new Thread(AttraversaDxSx);
             ConsoleKeyInfo lettera;
             bool fine = false;
+            Console.SetCursorPosition((width / 2) + 4, 27);
+            Console.WriteLine("Comandi:");
+            Console.SetCursorPosition(20, 28);
+            Console.WriteLine("L - Aggiungi auto a sinistra   R - Aggiungi auto a destra   P - Passaggio auto");
+            Console.SetCursorPosition((width / 2) + 4, 29);
+            Console.WriteLine("E - Esci");
 
             //int height = Console.WindowHeight;
             do
