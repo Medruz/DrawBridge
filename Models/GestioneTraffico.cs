@@ -282,15 +282,5 @@ namespace DrawbridgeSimulator.Models
                 }
             }
         }
-
-        public void ScriviAutoDx()
-        {
-
-        }
-
-        public void ScriviAutoSx()
-        {
-
-        }
     }
 }
